@@ -47,19 +47,19 @@ then
 	exit
 fi
 
-#~ debug "Launching the system setup script"
-#~ "$SCRIPT_SETUP_SYSTEM" $*
+debug "Launching the system setup script"
+"$SCRIPT_SETUP_SYSTEM" $*
  
 debug "Copying the user deploy script and the configuration to redmine lib dir"
 cp "$SHELL_FANCY" "$REDMINE_CONFIGURATION_FILE" "$SCRIPT_DEPLOY_SOURCE_CODE" "$SCRIPT_DEPLOY_PLUGINS" "$REDMINE_LIB_DIR"/
 chown "$REDMINE_FILES_OWNER:$REDMINE_FILES_GROUP" "$REDMINE_LIB_DIR"/*.sh "$REDMINE_LIB_DIR"/*.conf
 chmod +x "$REDMINE_LIB_DIR"/*.sh
 
-#~ debug "Launching user setup script '`basename "$SCRIPT_DEPLOY_SOURCE_CODE"`' ..."
-#~ su -c "$REDMINE_LIB_DIR"/"`basename "$SCRIPT_DEPLOY_SOURCE_CODE"`" "$REDMINE_USERNAME"
+debug "Launching user setup script '`basename "$SCRIPT_DEPLOY_SOURCE_CODE"`' ..."
+su -c "$REDMINE_LIB_DIR"/"`basename "$SCRIPT_DEPLOY_SOURCE_CODE"`" "$REDMINE_USERNAME"
 
-#~ debug "Launching user setup script '`basename "$SCRIPT_DEPLOY_PLUGINS"`' ..."
-#~ su -c "$REDMINE_LIB_DIR"/"`basename "$SCRIPT_DEPLOY_PLUGINS"`" "$REDMINE_USERNAME"
+debug "Launching user setup script '`basename "$SCRIPT_DEPLOY_PLUGINS"`' ..."
+su -c "$REDMINE_LIB_DIR"/"`basename "$SCRIPT_DEPLOY_PLUGINS"`" "$REDMINE_USERNAME"
 
 debug "Launching system setup script '`basename "$SCRIPT_INSTALL_GITOLITE_AND_GIT_HOSTING"`' ..."
 "$SCRIPT_INSTALL_GITOLITE_AND_GIT_HOSTING"
