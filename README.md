@@ -1,4 +1,4 @@
-# BatCave
+# Redmine Asso Kit
 
 Shell scripts to install [Redmine](http://www.redmine.org/) plus ~25 plugins and [Gitolite](https://github.com/sitaramc/gitolite), all translated 100% to french.
 
