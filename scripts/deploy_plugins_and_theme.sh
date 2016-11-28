@@ -1,5 +1,5 @@
 #!/bin/sh
-# deploy ~25 Redmine plugins source code and populate Mysql database
+# deploy ~25 Redmine plugins +1 theme and populate Mysql database
 
 # halt on first error
 set -e
@@ -16,12 +16,12 @@ ONLY_RUN_RAKE_PLUGINS_AT_THE_END=true
 # redmine configuration
 . "$REDMINE_CONFIGURATION_FILE"
 
-title "Deploy ~25 Redmine plugins source code and populate Mysql database"
+title "Deploy ~25 Redmine plugins +1 theme and populate Mysql database"
 
 hepl()
 {
 	cat <<ENDCAT
-This shell script deploys ~25 Redmine plugins source code and populate Mysql database
+This shell script deploys ~25 Redmine plugins +1 theme and populate Mysql database
 ENDCAT
 usage
 }
@@ -153,11 +153,11 @@ install_plugin_from_git \
 	https://github.com/a-ono/redmine_per_project_formatting.git \
 	redmine_per_project_formatting
 
-# install issue badge (notification of the number of currently assigned issues to me)
-info "Issue badge"
-install_plugin_from_git \
-	https://github.com/akiko-pusu/redmine_issue_badge.git \
-	redmine_issue_badge
+#~ # install issue badge (notification of the number of currently assigned issues to me)
+#~ info "Issue badge"
+#~ install_plugin_from_git \
+#~ 	https://github.com/akiko-pusu/redmine_issue_badge.git \
+#~ 	redmine_issue_badge
 
 # install repetitive task
 info "Repetitive tasks"
@@ -289,8 +289,10 @@ bundle_install
 rake_plugins z_redmine_language_change
 
 
-# @TODO install theme (ecloserie)
-#git clone https://github.com/makotokw/redmine-theme-gitmike.git themes/gitmike
+info "Install theme"
+
+debug "Install gitmike theme"
+git clone -q https://github.com/makotokw/redmine-theme-gitmike.git public/themes/gitmike
 
 
 if [ "$ONLY_RUN_BUNDLE_INSTALL_AT_THE_END" = 'true' ]

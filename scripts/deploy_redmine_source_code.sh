@@ -18,6 +18,7 @@ REDMINE_VERSION=3.3.1
 REDMINE_DIRNAME=redmine-${REDMINE_VERSION}
 REDMINE_DL_URL=http://www.redmine.org/releases/${REDMINE_DIRNAME}.tar.gz
 REDMINE_EXTRACTED_DIR="$REDMINE_LIB_DIR"/"$REDMINE_DIRNAME"
+REDMINE_UPDATE_DEFAULT_DATA_SQL="`dirname "$0"`"/update_default_data.sql
 
 title "Deploy Redmine source code and populate Mysql database"
 
@@ -132,6 +133,9 @@ RAILS_ENV=production bundle exec rake db:migrate >/dev/null
 debug "Populating database with default data (fr)"
 RAILS_ENV=production REDMINE_LANG=fr bundle exec rake redmine:load_default_data >/dev/null
 
+debug "Updating default data with our custom SQL script"
+mysql --defaults-extra-file="$REDMINE_MYSQL_CNF_FILE" redmine < "$REDMINE_UPDATE_DEFAULT_DATA_SQL"
+
 debug "Creating a script to easily run the webrick webserver (use it only for testing purpose)"
 cat > run_webrick_webserver.sh <<ENDCAT
 #!/bin/sh
@@ -157,5 +161,4 @@ if ! ./run_webrick_webserver.sh production
 then
 	echo -n >/dev/null # do nothing
 fi
-
 
