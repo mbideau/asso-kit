@@ -1,0 +1,257 @@
+fr:
+
+  # config/locale/fr.yml overrides
+  activerecord:
+    errors:
+      messages:
+        cant_link_an_issue_with_a_descendant: "Une tâche ne peut pas être liée à l'une de ses sous-tâches"
+        earlier_than_minimum_start_date: "ne peut pas être antérieure au %{date} à cause des tâches qui précèdent"
+  notice_failed_to_save_issues: "%{count} tâche(s) sur les %{total} sélectionnées n'ont pas pu être mise(s) à jour : %{ids}."
+  notice_no_issue_selected: "Aucune tâche sélectionnée ! Cochez les tâches que vous voulez mettre à jour."
+  notice_issue_done_ratios_updated: L'avancement des tâches a été mis à jour.
+  notice_issue_successful_create: "Tâche %{id} créée."
+  notice_issue_update_conflict: "La tâche a été mise à jour par un autre utilisateur pendant que vous la modifiez."
+  error_issue_not_found_in_project: "La tâche n'existe pas ou n'appartient pas à ce projet"
+  error_no_tracker_in_project: "Aucun type de tâche n'est associé à ce projet. Vérifier la configuration du projet."
+  error_no_default_issue_status: "Aucun statut de tâche n'est défini par défaut. Vérifier votre configuration (Administration -> Statuts de tâches)."
+  error_can_not_delete_tracker: Ce type de tâche contient des tâches et ne peut pas être supprimé.
+  error_can_not_reopen_issue_on_closed_version: 'Une tâche assignée à une version fermée ne peut pas être réouverte'
+  error_issue_done_ratios_not_updated: L'avancement des tâches n'a pas pu être mis à jour.
+  error_workflow_copy_source: 'Veuillez sélectionner un type de tâche et/ou un rôle source'
+  error_workflow_copy_target: 'Veuillez sélectionner les types de tâche et rôles cibles'
+  error_unable_delete_issue_status: Impossible de supprimer le statut de tâche
+  error_no_tracker_allowed_for_new_issue_in_project: "Le projet ne dispose d'aucun type de tâche sur lequel vous pouvez créer une tâche"
+  mail_subject_account_activation_request: "Tâche d'activation d'un compte %{value}"
+  mail_subject_reminder: "%{count} tâche(s) arrivent à échéance (%{days})"
+  mail_body_reminder: "%{count} tâche(s) qui vous sont assignées arrivent à échéance dans les %{days} prochains jours :"
+  field_issue: Tâche
+  field_is_closed: Tâche fermée
+  field_tracker: Type de tâche
+  field_is_in_roadmap: Tâches affichées dans la roadmap
+  field_issue_to: Tâche liée
+  field_assignable: Tâches assignables à ce rôle
+  field_issues_visibility: Visibilité des tâches
+  setting_issues_export_limit: Limite d'exportation des tâches
+  setting_cross_project_issue_relations: Autoriser les relations entre tâches de différents projets
+  setting_issue_list_default_columns: Colonnes affichées par défaut sur la liste des tâches
+  setting_display_subprojects_issues: Afficher par défaut les tâches des sous-projets sur les projets principaux
+  setting_issue_done_ratio: Calcul de l'avancement des tâches
+  setting_issue_group_assignment: Permettre l'assignation des tâches aux groupes
+  setting_default_issue_start_date_to_creation_date: Donner à la date de début d'une nouvelle tâche la valeur de la date du jour
+  setting_commit_cross_project_ref: Permettre le référencement et la résolution des tâches de tous les autres projets
+  setting_default_projects_tracker_ids: Types de tâche par défaut pour les nouveaux projets
+  setting_link_copied_issue: Lier les tâches lors de la copie
+  permission_manage_categories: Gérer les catégories de tâches
+  permission_view_issues: Voir les tâches
+  permission_add_issues: Créer des tâches
+  permission_edit_issues: Modifier les tâches
+  permission_copy_issues: Copier les tâches
+  permission_set_issues_private: Rendre les tâches publiques ou privées
+  permission_set_own_issues_private: Rendre ses propres tâches publiques ou privées
+  permission_move_issues: Déplacer les tâches
+  permission_delete_issues: Supprimer les tâches
+  permission_manage_news: Gérer les publications
+  permission_comment_news: Commenter les publications
+  permission_manage_related_issues: Gérer les tâches associées
+  permission_import_issues: Importer des tâches
+  project_module_issue_tracking: Suivi des tâches
+  project_module_news: Blog
+  project_module_files: Téléchargements
+  label_issue: Tâche
+  label_issue_new: Nouvelle tâche
+  label_issue_plural: Tâches
+  label_issue_view_all: Voir toutes les tâches
+  label_issues_by: "Tâches par %{value}"
+  label_issue_added: Tâche ajoutée
+  label_issue_updated: Tâche mise à jour
+  label_tracker: Type de tâche
+  label_tracker_plural: Types de tâche
+  label_tracker_all: Tous les types de tâche
+  label_tracker_new: Nouveau type de tâche
+  label_workflow: Flux de travail
+  label_issue_status: Statut de tâches
+  label_issue_status_plural: Statuts de tâches
+  label_issue_category: Catégorie de tâches
+  label_issue_category_plural: Catégories de tâches
+  label_reported_issues: Tâches soumises
+  label_assigned_issues: Tâches assignées
+  label_assigned_to_me_issues: Tâches qui me sont assignées
+  label_news: Blog
+  label_news_new: Nouvelle publication
+  label_news_plural: Blog
+  label_news_latest: Dernières publications
+  label_news_view_all: Voir toutes les publications
+  label_news_added: Publication ajoutée
+  label_news_comment_added: Commentaire ajouté à une publication
+  label_x_issues:
+    zero:  0 tâche
+    one:   1 tâche
+    other: "%{count} tâches"
+  label_any_issues_in_project: une tâche du projet
+  label_any_issues_not_in_project: une tâche hors du projet
+  label_no_issues_in_project: aucune tâche du projet
+  label_any_open_issues: une tâche ouverte
+  label_no_open_issues: aucune tâche ouverte
+  label_roadmap_no_issues: Aucune tâche pour cette version
+  label_issue_tracking: Suivi des tâches
+  label_copy_workflow_from: Copier le flux de travail de
+  label_watched_issues: Tâches surveillées
+  label_related_issues: Tâches liées
+  label_bulk_edit_selected_issues: Modifier les tâches sélectionnées
+  label_update_issue_done_ratios: Mettre à jour l'avancement des tâches
+  label_display_used_statuses_only: N'afficher que les statuts utilisés dans ce type de tâche
+  label_additional_workflow_transitions_for_author: Autorisations supplémentaires lorsque l'utilisateur a créé la tâche
+  label_additional_workflow_transitions_for_assignee: Autorisations supplémentaires lorsque la tâche est assignée à l'utilisateur
+  label_issues_visibility_all: Toutes les tâches
+  label_issues_visibility_public: Toutes les tâches non privées
+  label_issues_visibility_own: Tâches créées par ou assignées à l'utilisateur
+  label_attribute_of_issue: "%{name} de la tâche"
+  label_link_copied_issue: Lier la tâche copiée
+  label_search_open_issues_only: Tâches ouvertes uniquement
+  label_import_issues: Importer des tâches
+  label_new_project_issue_tab_enabled: Afficher l'onglet "Nouvelle tâche"
+  text_workflow_edit: Sélectionner un type de tâche et un rôle pour éditer le flux de travail
+  text_tracker_no_workflow: Aucun flux de travail n'est défini pour ce type de tâche
+  text_issues_ref_in_commit_messages: Référencement et résolution des tâches dans les commentaires de commits
+  text_issue_added: "La tâche %{id} a été soumise par %{author}."
+  text_issue_updated: "La tâche %{id} a été mise à jour par %{author}."
+  text_issue_category_destroy_question: "%{count} tâches sont affectées à cette catégorie. Que voulez-vous faire ?"
+  text_issue_category_destroy_assignments: N'affecter les tâches à aucune autre catégorie
+  text_issue_category_reassign_to: Réaffecter les tâches à cette catégorie
+  text_user_mail_option: "Pour les projets non sélectionnés, vous recevrez seulement des notifications pour ce que vous surveillez ou à quoi vous participez (exemple: tâches dont vous êtes l'auteur ou la personne assignée)."
+  text_no_configuration_data: "Les rôles, types de tâche, statuts et le flux de travail ne sont pas encore paramétrés.\nIl est vivement recommandé de charger le paramétrage par defaut. Vous pourrez le modifier une fois chargé."
+  text_issues_destroy_confirmation: 'Êtes-vous sûr de vouloir supprimer la ou les tâches(s) selectionnée(s) ?'
+  text_destroy_time_entries_question: "%{hours} heures ont été enregistrées sur les tâches à supprimer. Que voulez-vous faire ?"
+  text_reassign_time_entries: 'Reporter les heures sur cette tâche:'
+  enumeration_issue_priorities: Priorités des tâches
+  label_issue_menu: Liste des tâches
+
+  # plugins/redmine_scheduling_poll/config/locales/fr.yml overrides
+  notice_scheduling_poll_successful_create: "%{link_to_poll} créé pour la tâche."
+  project_module_scheduling_polls: Sondage de présence
+  permission_view_schduling_polls: Voir le sondage de présence
+  permission_vote_schduling_polls: Indiquer sa présence
+  label_scheduling_poll: Sondage de présence
+  label_edit_scheduling_poll_items: Modifier les dates
+  label_vote_on_scheduling_poll: Indiquer sa présence
+  label_toggle_date_picker_on_scheduling_poll_items: Déclencher le sélecteur de date
+  label_remove_scheduling_poll_item: Supprimer la date
+  label_add_scheduling_poll_item: Ajouter une date
+  notice_successful_scheduling_vote: Présence enregistrée avec succés
+  label_settings_scheduling_vote_value: "Décompte #%{num}"
+  label_settings_scheduling_poll_item_date_format: Format de la date
+
+  # plugins/redmine_issue_badge/config/locales/fr.yml overrides
+  label_issue_badge: "Montrer le nombre de tâches assignées dans un badge."
+
+  # plugins/redmine_tab/config/locales/fr.yml overrides
+  project_module_tab: "Onglet collaboratif"
+
+  # plugins/redmine_tweaks/config/locales/fr.yml overrides
+  label_settings_rules: "Règles pour les tâches"
+  label_remove_news: "Supprimer 'Dernières publications' de la page 'Résumé'"
+  label_remove_latest_projects: "Supprimer 'Derniers projets' de la page 'Résumé'"
+  remove_news_info: "Supprimer les dernières publications de la page 'Résumé'."
+  remove_latest_projects_info: "Supprimer 'Derniers projets' de la page 'Résumé'."
+  remove_mypage_info: "Parfois c'est plus utile de masquer l'élement 'Ma Page' dans le but d'utiliser la page de liste des tâches. Celle-ci à l'avantage que les tâches peuvent être listées selon leur statut."
+  label_new_ticket_message: "Note pour les nouvelles tâches"
+  new_ticket_message_info: "Une note sera affichée à quiconque veut ajouter une tâche. Par exemple vous pouvez saisir les conditions d'acceptations ou les règles de gestion des tâches. Ces paramètres sont utilisés par tous les projets."
+  project_overview_content_info: "Ici vous pouvez ajouter votre texte, celui-ci sera affiché sur la page 'Résumé'. Par exemple vous pouvez indiquer un lien vers une page wiki, qui serait commune à tous les projets et à tous les membres. Le but est d'avoir un meilleur standard projet et de maintenir une seule description wiki."
+  global_sidebar_info: "Entrez un text commun à tous les projets ici. Celui-ci sera affiché sur la page 'Résumé', la liste des tâches et les pages wiki."
+  permission_edit_closed_issues: "Modifier la liste des tâches fermées"
+  label_rule_issue_close_with_open_children: "Les tâches avec des sous-tâches ouvertes ne peuvent pas être fermées"
+  top_rules_help: "Ici vous pouvez définir des règles qui seront appliquées dans les tâches de tous les projets."
+  label_rule_issue_status_change: "Si la personne 'Assignée' est inchangée et que le statut de la tâche passe de X à Y, alors l'auteur devient la personne assignée."
+  activerecord:
+    errors:
+      messages:
+        issue_cannot_close_with_open_children: "Cette tâche ne peut qu'être fermée que si toutes ses sous-tâches sont préalablement fermées."
+
+  # plugins/recurring_tasks/config/locales/fr.yml overrides
+  label_recurring_tasks:    "Tâches répétitives"
+  label_recurring_task:     "Tâche répétitive"
+  label_current_issue:      "Répéter la tâche"
+  label_recurrence_pattern: "Exécuter la tâche tous les"
+  label_add_recurring_task: "Répéter la tâche"
+  label_no_recurring_tasks: "Aucune tâche répétitive n'a été trouvée dans le système."
+  label_recurs_dependent: "après la dernière fermeture de la tâche"
+  error_recurring_task_not_found: "Pas de tâche répétitive trouvée. "
+  field_recur_subtasks: "Répéter les sous-tâches?"
+  help_add_general_recurring_task: "Il est plus pratique d'ajouter des répétitions depuis la page de la tâche."
+  label_recurring_tasks_setting_reopen_issue: "Ré-ouvrir la tâche pour la répétition?"
+  label_recurring_tasks_setting_journal_user: "Attribuer la modification de l'historique de la tâche à l'utilisateur:"
+
+  # plugins/redmine_dashboard/config/locales/fr.yml overrides
+  project_module_dashboard: Kanban
+  permission_view_dashboards: Voir le kanban
+  permission_configure_dashboards: Configurer le kanban
+  menu_label_dashboard: Kanban
+  rdb_filter_assignee_me: Mes tâches
+  rdb_options_change_assignee_info: Assigner à l'utilisateur courant lorsque la tâche est déplacée.
+  rdb_options_hide_done: Masquer les tâches fermées
+  rdb_options_hide_done_info: Masquer les tâches fermées et réduire la colonne Terminé
+  rdb_options_issue_view: Affichage des tâches
+  rdb_options_group: Regrouper par tâche
+  rdb_x_issues:
+    one: 1 tâche
+    other: "%{count} tâches"
+  rdb_dialog_update_issue_title: Mettre à jour la tâche
+  rdb_dialog_update_issue_status: Choisir le statut des nouvelles tâches
+  rdb_other_issues: Autres tâches <span>(%{count})</span>
+  rdb_all_issues: Toutes les tâches
+  rdb_issue_menu_redmine_issue: Tâche Redmine
+  rdb_flash_missing_lock_version: "<p><b>Version de verrou manquante</b> : impossible de mettre à jour la tâche sans version de verrou. Veuillez réessayer."
+  rdb_flash_stale_object: "<p>Tentative de mise à jour d'une tâche dépassée : <b>%{issue}</b>. Vérifiez les changements puis réessayez."
+
+  # plugins/redmine_dmsf/config/locales/fr.yml overrides
+  dmsf: Documents
+  link_user_preferences: Préférences personnelles du module Documents
+  menu_dmsf: Documents
+  label_dmsf_downloaded: Document téléchargé
+  project_module_dmsf: Documents
+  label_dmsf: Documents
+
+  # plugins/redmine_ics_export/config/locales/fr.yml overrides
+  label_issues_mine: Mes tâches
+  label_issues_assigned: Tâches assignés
+  label_issues_all: Toutes les tâches
+  label_settings_rendering_issues: Affichage d'une Tâche en tant que
+  option_settings_enhance_summary_ticket_number_and_status: le numéro de la tâche et le statut
+
+  # plugins/redmine_issue_checklist/config/locales/fr.yml overrides
+  label_issue_checklist_plural: Liste à faire
+  field_checklist: A faire
+  label_checklist_save_log: Sauvegarder les changements dans l'historique de la tâche
+  label_checklist_done_ratio: Changer automatiquement le pourcentage effectué des tâches
+  permission_view_checklists: Voir les élements de la liste à faire
+  permission_done_checklists: Changer le pourcentage de la tâche en fonction de la liste à faire
+  permission_edit_checklists: Modifier les élements de la liste à faire
+
+  # plugins/unread_issues/config/locales/fr.yml overrides
+  my_issues_on_my_page: "Mes tâches"
+  unread_issues:
+    settings_label_assigned_issues: "Requête qui défini toutes les tâches pour l'utilisateur"
+  info_query_for_search_of_issues: "Requête pour rechercher les tâches non lues dont vous devriez être notifié."
+  permission_desc_issue_tracking_view_issue_view_stats: "Autoriser l'affichage des statistiques de consultation des tâches sur la page de la tâche dans un onglet séparé. Ce ne fonctionne que s'il y le plugin 'redmine_issue_tabs' installé."
+  label_cm_menu_top_menu_my_page: 'Mes tâches'
+  label_us_my_issues: 'Mes tâches'
+  label_cm_menu_top_menu_us_my_issues: 'Mes tâches'
+  label_rmplus_logo: ""
+
+  # plugins/easy_wbs/config/locales/fr.yml overrides
+  project_module_easy_wbs: MindMap
+  easy_wbs:
+    button_project_menu: MindMap
+  heading_easy_wbs_issues: MindMap
+  project_default_page:
+    easy_wbs: MindMap
+
+  # plugins/redmine_archive_issue_categories/config/locales/fr.yml overrides
+  plugin_delete_button_note: Ceci va aussi supprimer le nom de la catégorie des anciennes tâches
+
+  # plugins/redmine_banner/config/locales/fr.yml overrides
+  banner_off: "Masquer la bannière."
+
+  # plugins/redmine_ics_export/config/locales/fr.yml overrides
+  label_icalendar_header: Export ICalendar
+

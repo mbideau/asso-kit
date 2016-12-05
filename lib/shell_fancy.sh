@@ -9,23 +9,28 @@ debug()
 {
 	if [ "$DEBUG" = 'true' ]
 	then
-		echo "--- [`date '+%H:%M:%S'`]  DEBUG  $1"
+		echo "--- [`date '+%H:%M:%S'`]   DEBUG   $1"
 	fi
 }
 
 info()
 {
-	echo "--- [`date '+%H:%M:%S'`]  INFO  $1"
+	echo "--- [`date '+%H:%M:%S'`]    INFO   $1"
 }
 
 warning()
 {
-	echo "--- [`date '+%H:%M:%S'`]  WARNING $1" >&2
+	echo "--- [`date '+%H:%M:%S'`]  WARNING  $1" >&2
 }
 
 error()
 {
-	echo "--- [`date '+%H:%M:%S'`]  ERROR $1" >&2
+	echo "--- [`date '+%H:%M:%S'`]   ERROR   $1" >&2
+}
+
+success()
+{
+	echo "--- [`date '+%H:%M:%S'`]  SUCCESS  $1"
 }
 
 code()

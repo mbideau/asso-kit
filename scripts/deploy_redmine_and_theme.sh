@@ -4,25 +4,37 @@
 # halt on first error
 set -e
 
-SHELL_FANCY="`dirname "$0"`"/shell_fancy.sh
-REDMINE_CONFIGURATION_FILE="`dirname "$0"`"/redmine.conf
+THIS_SCRIPT_DIR="`dirname "$0"`"
+SRC_ROOT="`dirname "$THIS_SCRIPT_DIR"|xargs realpath`"
 
-# shell fancy
-. "$SHELL_FANCY"
+SHELL_FANCY="$SRC_ROOT"/lib/shell_fancy.sh
+CONFIGURATION_FILE="$SRC_ROOT"/redmine.conf
+
+REDMINE_TEST_SCRIPT_SRC="$SRC_ROOT"/bin/test_redmine_with_webrick_webserver.sh
 
 # redmine configuration
-. "$REDMINE_CONFIGURATION_FILE"
+. "$CONFIGURATION_FILE"
 
 # specific configuration
 REDMINE_VERSION=3.3.1
 REDMINE_DIRNAME=redmine-${REDMINE_VERSION}
 REDMINE_DL_URL=http://www.redmine.org/releases/${REDMINE_DIRNAME}.tar.gz
 REDMINE_EXTRACTED_DIR="$REDMINE_LIB_DIR"/"$REDMINE_DIRNAME"
-REDMINE_UPDATE_DEFAULT_DATA_SQL="`dirname "$0"`"/update_default_data.sql
+REDMINE_UPDATE_DEFAULT_DATA_SQL="$SRC_ROOT"/db/update_default_data.sql
+
+REDMINE_TEST_SCRIPT_PATH="$REDMINE_USER_HOME"/bin/test_redmine_with_webrick_webserver.sh
+REDMINE_MYSQL_CNF_FILE=$REDMINE_USER_HOME/.config/mysql/redmine.cnf
+
+REDMINE_NGINX_CONF="$SRC_ROOT"/conf/nginx/nginx.conf
+REDMINE_NGINX_SERVER_CONF="$SRC_ROOT"/conf/nginx/server.conf
+REDMINE_NGINX_SITE_CONF="$SRC_ROOT"/conf/nginx/asso-kit.local.conf
+
+# shell fancy
+. "$SHELL_FANCY"
 
 title "Deploy Redmine source code and populate Mysql database"
 
-hepl()
+help()
 {
 	cat <<ENDCAT
 This shell script install Redmine source code and populate Mysql database
@@ -35,6 +47,7 @@ usage()
 	cat <<ENDCAT
 Usage:
 	`basename "$0"`
+
 ENDCAT
 }
 
@@ -58,6 +71,7 @@ then
 	error "Existing redmine installation. Please remove '$REDMINE_EXTRACTED_DIR' manually before proceeding."
 	exit 1
 fi
+
 
 info "Deploying redmine $REDMINE_VERSION"
 
@@ -90,6 +104,7 @@ mv public/themes "$redmine_version_var_dir"/ && ln -s "$redmine_version_var_dir"
 debug "Removing 'log' directory and creating symlink to redmine LOG dir '$REDMINE_LOG_DIR'"
 rm -fr log && ln -s "$REDMINE_LOG_DIR" log
 
+
 info "Configuring Redmine application"
 
 debug "Getting the mysql redmine user name and password"
@@ -112,53 +127,88 @@ sed \
 	-e "s#^delivery_method: :sendmail\$#    \0#" \
 	> config/configuration.yml
 
+debug "Changing owner and group to redmine"
+chown -R "$REDMINE_FILES_OWNER":"$REDMINE_FILES_GROUP" "$REDMINE_LIB_DIR" "$REDMINE_VAR_DIR"
+
+
 info "Installing required ruby gems (please be patient ...)"
-bundle install --without development test rmagick --path vendor/bundle >/dev/null
+su -c "bundle install --without development test rmagick --path vendor/bundle" $REDMINE_USERNAME >/dev/null
 
 debug "Checking rails version"
-rails_version="`bundle exec rails --version|sed 's/^Rails \+//'`"
+rails_version="`su -c "bundle exec rails --version" $REDMINE_USERNAME|sed 's/^Rails \+//'`"
 if ! echo "$rails_version"|grep -q '^4\.2\.[0-9]\+\(\.[0-9]\+\)\?$'
 then
 	warning "Rails version should be '4.2.x' but is '$rails_version'"
 fi
 
 debug "Generating application secret token"
-bundle exec rake generate_secret_token >/dev/null
+su -c "bundle exec rake generate_secret_token" $REDMINE_USERNAME >/dev/null
 
-info "Populating database"
+
+info "Populating database (please be patient ... ~ 5 min)"
 
 debug "Creating database schema"
-RAILS_ENV=production bundle exec rake db:migrate >/dev/null
+su -c "RAILS_ENV=production bundle exec rake db:migrate" $REDMINE_USERNAME >/dev/null
 
 debug "Populating database with default data (fr)"
-RAILS_ENV=production REDMINE_LANG=fr bundle exec rake redmine:load_default_data >/dev/null
+su -c "RAILS_ENV=production REDMINE_LANG=fr bundle exec rake redmine:load_default_data" $REDMINE_USERNAME >/dev/null
 
 debug "Updating default data with our custom SQL script"
-mysql --defaults-extra-file="$REDMINE_MYSQL_CNF_FILE" redmine < "$REDMINE_UPDATE_DEFAULT_DATA_SQL"
+mysql --defaults-extra-file="$REDMINE_MYSQL_CNF_FILE" "$REDMINE_MYSQL_DATABASE_PRODUCTION" < "$REDMINE_UPDATE_DEFAULT_DATA_SQL"
 
-debug "Creating a script to easily run the webrick webserver (use it only for testing purpose)"
-cat > run_webrick_webserver.sh <<ENDCAT
-#!/bin/sh
 
-set -e
+info "Installing theme"
 
-environment="\$1"
-if [ "\$environment" = "" ]
+debug "Installing gitmike theme"
+su -c "git clone -q https://github.com/makotokw/redmine-theme-gitmike.git public/themes/gitmike" $REDMINE_USERNAME
+
+debug "Installing asso-kit theme"
+su -c "git clone -q https://github.com/mbideau/redmine-asso-kit-theme.git public/themes/asso-kit" $REDMINE_USERNAME
+
+
+info "Creating a test shell script to '$REDMINE_TEST_SCRIPT_PATH'"
+
+debug "Copying the redmine test script"
+if [ ! -d "`dirname "$REDMINE_TEST_SCRIPT_PATH"`" ]
 then
-	environment=production
+	mkdir -p "`dirname "$REDMINE_TEST_SCRIPT_PATH"`"
+	chown "$REDMINE_FILES_OWNER":"$REDMINE_FILES_GROUP" "`dirname "$REDMINE_TEST_SCRIPT_PATH"`"
 fi
+cp "$REDMINE_TEST_SCRIPT_SRC" "$REDMINE_TEST_SCRIPT_PATH"
+chown "$REDMINE_FILES_OWNER":"$REDMINE_FILES_GROUP" "$REDMINE_TEST_SCRIPT_PATH"
+chmod +x "$REDMINE_TEST_SCRIPT_PATH"
 
-# be careful : binding to 0.0.0.0 will allow connection from the outside (not only localhost)
-bundle exec rails server webrick --environment "\$environment" --binding=0.0.0.0
 
-ENDCAT
-chmod +x run_webrick_webserver.sh
+info "Deploying web server configuration"
 
-info "Testing the installation"
-
-debug "Running the webrick server"
-if ! ./run_webrick_webserver.sh production
+if [ "$DEPLOY_NGINX_PASSENGER" = 'true' ]
 then
-	echo -n >/dev/null # do nothing
+	#~ if [ -f /etc/nginx/"`basename "$REDMINE_NGINX_CONF"`" ]
+	#~ then
+	#~ 	cp /etc/nginx/"`basename "$REDMINE_NGINX_CONF"`" /etc/nginx/"`basename "$REDMINE_NGINX_CONF"`".ori
+	#~ fi
+	#~ cp "$REDMINE_NGINX_CONF" /etc/nginx/
+	#~ for d in /etc/nginx/conf.d /etc/nginx/site-available /etc/nginx/site-enabled
+	#~ do
+	#~ 	if [ ! -d "$d" ]
+	#~ 	then
+	#~ 		mkdir "$d"
+	#~ 	fi
+	#~ done
+	#~ cp "$REDMINE_NGINX_SERVER_CONF" /etc/nginx/conf.d/
+	cp "$REDMINE_NGINX_SITE_CONF" /etc/nginx/sites-available/
+	ln -s ../sites-available/"`basename "$REDMINE_NGINX_SITE_CONF"`" /etc/nginx/sites-enabled/
+
+	redmine_domain="`basename "$REDMINE_NGINX_SITE_CONF" '.conf'`"
+	if ! grep "$redmine_domain" /etc/hosts
+	then
+		debug "adding domain '$redmine_domain' to /etc/hosts"
+		echo "127.0.0.1	$redmine_domain" >> /etc/hosts
+	fi
+
+	info "Restarting webserver (nginx)"
+	service nginx restart
+else
+	warning "Web server deployment disabled. Check DEPLOY_NGINX_PASSENGER in '$CONFIGURATION_FILE'"
 fi
 
