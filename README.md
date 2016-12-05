@@ -4,7 +4,14 @@ Shell scripts to install [Redmine](http://www.redmine.org/) plus ~25 plugins and
 
 ## Installation
 
-	sudo ./install.sh
+	# create two files, one for the mysql admin password, the other for the redmine mysql user
+	touch ~/.config/mysql/admin.pass
+	vi ~/.config/mysql/admin.pass # write the password
+	touch ~/.config/mysql/redmine.pass
+	vi ~/.config/mysql/redmine.pass # write the password
+
+	# run the install script
+	sudo ./install.sh ~/.config/mysql/admin.pass ~/.config/mysql/redmine.pass
 
 ## Shell scripts
 
@@ -39,7 +46,7 @@ This is the system setup script.
 ### scripts/deploy_redmine_and_theme.sh
 
 This is the redmine source code deployment script.  
-It also installs a theme ([gitmike](https://github.com/makotokw/redmine-theme-gitmike)).
+It also installs a theme ([asso-kit](https://github.com/mbideau/redmine-asso-kit-theme)).
 
 ### scripts/deploy_plugins.sh
 
