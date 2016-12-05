@@ -6,25 +6,14 @@ set -e
 
 THIS_SCRIPT_DIR="`dirname "$0"`"
 SRC_ROOT="`dirname "$THIS_SCRIPT_DIR"|xargs realpath`"
-
 SHELL_FANCY="$SRC_ROOT"/lib/shell_fancy.sh
 CONFIGURATION_FILE="$SRC_ROOT"/redmine.conf
-
-UNREAD_ISSUES_ZIP="$SRC_ROOT"/closed_sources/unread_issues.zip
-LOCALES_BETTER_FRENCH="$SRC_ROOT"/locales/better-french.yml
-ASSO_KIT_PLUGIN_SRC_DIR="$SRC_ROOT"/asso_kit_plugin
-
-REDMINE_UPDATE_DEFAULT_DATA_SQL="$SRC_ROOT"/db/update_default_data_plugins.sql
 
 ONLY_RUN_BUNDLE_INSTALL_AT_THE_END=true
 ONLY_RUN_RAKE_PLUGINS_AT_THE_END=true
 
 # redmine configuration
 . "$CONFIGURATION_FILE"
-
-REDMINE_MYSQL_CNF_FILE=$REDMINE_USER_HOME/.config/mysql/redmine.cnf
-
-REDMINE_TEST_SCRIPT_PATH="$REDMINE_USER_HOME"/bin/test_redmine_with_webrick_webserver.sh
 
 # shell fancy
 . "$SHELL_FANCY"
@@ -328,7 +317,7 @@ fi
 
 info "Updating default data"
 debug "Updating default data with our custom SQL script"
-mysql --defaults-extra-file="$REDMINE_MYSQL_CNF_FILE" "$REDMINE_MYSQL_DATABASE_PRODUCTION" < "$REDMINE_UPDATE_DEFAULT_DATA_SQL"
+mysql --defaults-extra-file="$REDMINE_MYSQL_CNF_FILE" "$REDMINE_MYSQL_DATABASE_PRODUCTION" < "$REDMINE_DEFAULT_DATA_SQL_PLUGINS"
 
 
 if [ "$DEPLOY_NGINX_PASSENGER" = 'true' ]

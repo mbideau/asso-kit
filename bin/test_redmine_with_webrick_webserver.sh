@@ -3,9 +3,7 @@
 # halt on first error
 set -e
 
-REDMINE_ENV_FILE="$HOME"/.config/redmine/environment.sh
-
-. "$REDMINE_ENV_FILE"
+REDMINE_LIB_DIR=/usr/local/lib/redmine
 
 environment="$1"
 if [ "$environment" = "" ]

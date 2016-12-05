@@ -6,18 +6,11 @@ set -e
 
 THIS_SCRIPT_DIR="`dirname "$0"`"
 SRC_ROOT="`dirname "$THIS_SCRIPT_DIR"|xargs realpath`"
-
 SHELL_FANCY="$SRC_ROOT"/lib/shell_fancy.sh
 CONFIGURATION_FILE="$SRC_ROOT"/redmine.conf
 
-REDMINE_UPDATE_DEFAULT_DATA_SQL="$SRC_ROOT"/db/update_default_data_asso_kit.sql
-
 # redmine configuration
 . "$CONFIGURATION_FILE"
-
-REDMINE_MYSQL_CNF_FILE=$REDMINE_USER_HOME/.config/mysql/redmine.cnf
-
-REDMINE_TEST_SCRIPT_PATH="$REDMINE_USER_HOME"/bin/test_redmine_with_webrick_webserver.sh
 
 # shell fancy
 . "$SHELL_FANCY"
@@ -73,7 +66,7 @@ su -c "bundle exec rake redmine:plugins NAME=zz_asso_kit RAILS_ENV=$environment"
 
 info "Updating default data"
 debug "Updating default data with our custom SQL script"
-mysql --defaults-extra-file="$REDMINE_MYSQL_CNF_FILE" "$REDMINE_MYSQL_DATABASE_PRODUCTION" < "$REDMINE_UPDATE_DEFAULT_DATA_SQL"
+mysql --defaults-extra-file="$REDMINE_MYSQL_CNF_FILE" "$REDMINE_MYSQL_DATABASE_PRODUCTION" < "$REDMINE_DEFAULT_DATA_SQL_ASSO_KIT"
 
 
 if [ "$DEPLOY_NGINX_PASSENGER" = 'true' ]

@@ -6,28 +6,11 @@ set -e
 
 THIS_SCRIPT_DIR="`dirname "$0"`"
 SRC_ROOT="`dirname "$THIS_SCRIPT_DIR"|xargs realpath`"
-
 SHELL_FANCY="$SRC_ROOT"/lib/shell_fancy.sh
 CONFIGURATION_FILE="$SRC_ROOT"/redmine.conf
 
-REDMINE_TEST_SCRIPT_SRC="$SRC_ROOT"/bin/test_redmine_with_webrick_webserver.sh
-
 # redmine configuration
 . "$CONFIGURATION_FILE"
-
-# specific configuration
-REDMINE_VERSION=3.3.1
-REDMINE_DIRNAME=redmine-${REDMINE_VERSION}
-REDMINE_DL_URL=http://www.redmine.org/releases/${REDMINE_DIRNAME}.tar.gz
-REDMINE_EXTRACTED_DIR="$REDMINE_LIB_DIR"/"$REDMINE_DIRNAME"
-REDMINE_UPDATE_DEFAULT_DATA_SQL="$SRC_ROOT"/db/update_default_data.sql
-
-REDMINE_TEST_SCRIPT_PATH="$REDMINE_USER_HOME"/bin/test_redmine_with_webrick_webserver.sh
-REDMINE_MYSQL_CNF_FILE=$REDMINE_USER_HOME/.config/mysql/redmine.cnf
-
-REDMINE_NGINX_CONF="$SRC_ROOT"/conf/nginx/nginx.conf
-REDMINE_NGINX_SERVER_CONF="$SRC_ROOT"/conf/nginx/server.conf
-REDMINE_NGINX_SITE_CONF="$SRC_ROOT"/conf/nginx/asso-kit.local.conf
 
 # shell fancy
 . "$SHELL_FANCY"
@@ -154,7 +137,7 @@ debug "Populating database with default data (fr)"
 su -c "RAILS_ENV=production REDMINE_LANG=fr bundle exec rake redmine:load_default_data" $REDMINE_USERNAME >/dev/null
 
 debug "Updating default data with our custom SQL script"
-mysql --defaults-extra-file="$REDMINE_MYSQL_CNF_FILE" "$REDMINE_MYSQL_DATABASE_PRODUCTION" < "$REDMINE_UPDATE_DEFAULT_DATA_SQL"
+mysql --defaults-extra-file="$REDMINE_MYSQL_CNF_FILE" "$REDMINE_MYSQL_DATABASE_PRODUCTION" < "$REDMINE_DEFAULT_DATA_SQL_REDMINE"
 
 
 info "Installing theme"

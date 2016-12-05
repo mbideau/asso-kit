@@ -5,18 +5,15 @@
 set -e
 
 THIS_SCRIPT_DIR="`dirname "$0"`"
-SHELL_FANCY="$THIS_SCRIPT_DIR"/../lib/shell_fancy.sh
-CONFIGURATION_FILE="$THIS_SCRIPT_DIR"/../redmine.conf
-MYSQL_ADMIN_CNF_FILE_PATH=/root/.config/mysql/admin.cnf
+SRC_ROOT="`dirname "$THIS_SCRIPT_DIR"|xargs realpath`"
+SHELL_FANCY="$SRC_ROOT"/lib/shell_fancy.sh
+CONFIGURATION_FILE="$SRC_ROOT"/redmine.conf
 
 # shell fancy
 . "$SHELL_FANCY"
 
 # redmine environment
 . "$CONFIGURATION_FILE"
-
-REDMINE_ENV_FILE_="$REDMINE_USER_HOME"/.config/redmine/environment.sh
-MYSQL_REDMINE_CNF_FILE_PATH="$REDMINE_USER_HOME"/.config/mysql/redmine.cnf
 
 title "Setup the system for a Redmine installation"
 
@@ -192,19 +189,6 @@ mkdir "$REDMINE_LOG_DIR"
 chown "$REDMINE_FILES_OWNER:root" "$REDMINE_LOG_DIR" # using root for owner to prevent logrotate to throw a warning
 chmod ug+rw "$REDMINE_LOG_DIR"
 chmod g+s "$REDMINE_LOG_DIR"
-
-
-info "Creating a redmine environment file to '$REDMINE_ENV_FILE_'"
-
-if [ ! -d "`dirname "$REDMINE_ENV_FILE_"`" ]
-then
-	debug "Creating directory '`dirname "$REDMINE_ENV_FILE_"`'"
-	mkdir -p "`dirname "$REDMINE_ENV_FILE_"`"
-	chown "$REDMINE_FILES_OWNER":"$REDMINE_FILES_GROUP" "`dirname "$REDMINE_ENV_FILE_"`"
-fi
-debug "Copying the redmine configuration to '$REDMINE_ENV_FILE_'"
-cp "$CONFIGURATION_FILE" "$REDMINE_ENV_FILE_"
-chown "$REDMINE_FILES_OWNER":"$REDMINE_FILES_GROUP" "$REDMINE_ENV_FILE_"
 
 
 info "Installing ruby gem dependencies manager 'bundler'"
