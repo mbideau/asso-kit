@@ -13,6 +13,10 @@ Shell scripts to install [Redmine](http://www.redmine.org/) plus ~25 plugins and
 	# run the install script
 	sudo ./install.sh ~/.config/mysql/admin.pass ~/.config/mysql/redmine.pass
 
+	# remove the password files
+	rm -f ~/.config/mysql/admin.pass ~/.config/mysql/redmine.pass
+
+
 ## Shell scripts
 
 Dependencies overview
@@ -56,8 +60,49 @@ _This one is very long to execute because of the compilation of natives extensio
 ### scripts/install_gitolite_and_plugin_git_hosting.sh
 
 This is the installation of [gitolite](https://github.com/sitaramc/gitolite) and the [redmine_git_hosting](http://redmine-git-hosting.io/) plugin that manages git repositories.  
+It also install [git-annex](http://git-annex.branchable.com/).
 
 ### scripts/deploy_asso_kit_plugin.sh
 
 This is the [Asso Kit plugin](https://github.com/mbideau/redmine-asso-kit).
+
+
+## Use GitAnnex
+
+To use git-annex synchronisation, follow those steps :
+
+1. On your local machine, generate ssh keypairs for your user :
+
+	ssh-keygen -t rsa -N '' -C 'AssoKit user key' -f ~/.ssh/id_rsa_assokit
+
+2. On AssoKit website, add the keys to your user by going to :  
+   MyAccount > SSH Keys  
+   
+   and copy the content of the public key :
+
+	cat ~/.ssh/id_rsa_assokit.pub
+
+3. On AssoKit website, create a git-annex repository by going to :  
+   <project> > Configuration > Repositories > New repository  
+   
+   Then, select 'Initialize with GitAnnex'  
+   
+   *You must have a user role with commit permission on this project*  
+
+4. On your local machine, install git-annex :
+
+	sudo apt-get -qq -y install --no-install-recommends git-annex lsof
+
+5. On your local machine, clone the git-annex repository :
+
+	git clone -q ssh://git@<domain>/<project>/<repository_name>.git /tmp/test-git-annex-repo.tmp
+
+6. On your local machine, start git-annex webapp, by clicking on its icon, or with :
+
+	git-annex webapp
+
+7. On your local machine, add the cloned git-annex repository by entering its path to the invite 'Make Repository'.  
+   In this example it will be : /tmp/test-git-annex-repo.tmp  
+
+You're done.
 

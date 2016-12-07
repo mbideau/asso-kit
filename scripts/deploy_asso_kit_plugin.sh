@@ -65,8 +65,16 @@ su -c "bundle exec rake redmine:plugins NAME=zz_asso_kit RAILS_ENV=$environment"
 
 
 info "Updating default data"
+
+debug "Creating SQL script by replacing %app_title% and %domain% from the source"
+tmp_sql=`mktemp '/tmp/redmine_update_data.sql.tmp.XXXXXXXXXX'`
+sed -e "s/%app_title%/$APP_TITLE/g" -e "s/%domain%/$DOMAIN/g" "$REDMINE_DEFAULT_DATA_SQL_ASSO_KIT" > "$tmp_sql"
+
 debug "Updating default data with our custom SQL script"
-mysql --defaults-extra-file="$REDMINE_MYSQL_CNF_FILE" "$REDMINE_MYSQL_DATABASE_PRODUCTION" < "$REDMINE_DEFAULT_DATA_SQL_ASSO_KIT"
+mysql --defaults-extra-file="$REDMINE_MYSQL_CNF_FILE" "$REDMINE_MYSQL_DATABASE_PRODUCTION" < "$tmp_sql"
+
+debug "Removing temp file '$tmp_sql'"
+rm -f "$tmp_sql"
 
 
 if [ "$DEPLOY_NGINX_PASSENGER" = 'true' ]

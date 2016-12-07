@@ -226,25 +226,18 @@ GRANT ALL PRIVILEGES ON ${REDMINE_MYSQL_DATABASE_TEST}.* TO '$REDMINE_MYSQL_USER
 GRANT ALL PRIVILEGES ON ${REDMINE_MYSQL_DATABASE_DEV}.* TO '$REDMINE_MYSQL_USERNAME'@'localhost';
 ENDMYSQL
 
-if [ ! -d "`dirname "$MYSQL_REDMINE_CNF_FILE_PATH"`" ]
+if [ ! -d "`dirname "$REDMINE_MYSQL_CNF_FILE"`" ]
 then
-	debug "Creating directory '`dirname "$MYSQL_REDMINE_CNF_FILE_PATH"`'"
-	mkdir -p "`dirname "$MYSQL_REDMINE_CNF_FILE_PATH"`"
-	chown "$REDMINE_FILES_OWNER":"$REDMINE_FILES_GROUP" "`dirname "$MYSQL_REDMINE_CNF_FILE_PATH"`"
+	debug "Creating directory '`dirname "$REDMINE_MYSQL_CNF_FILE"`'"
+	mkdir -p "`dirname "$REDMINE_MYSQL_CNF_FILE"`"
+	chown "$REDMINE_FILES_OWNER":"$REDMINE_FILES_GROUP" "`dirname "$REDMINE_MYSQL_CNF_FILE"`"
 fi
-debug "Generating a mysql cnf file to '$MYSQL_REDMINE_CNF_FILE_PATH'"
-cat > "$MYSQL_REDMINE_CNF_FILE_PATH" <<ENDCAT
+debug "Generating a mysql cnf file to '$REDMINE_MYSQL_CNF_FILE'"
+cat > "$REDMINE_MYSQL_CNF_FILE" <<ENDCAT
 [client]
 host        = localhost
 user        = "$REDMINE_MYSQL_USERNAME"
 password    = "$mysql_redmine_password"
 ENDCAT
-chown "$REDMINE_FILES_OWNER:$REDMINE_FILES_GROUP" "$MYSQL_REDMINE_CNF_FILE_PATH"
-
-debug "Adding the CNF file path to the environment file"
-cat >> "$REDMINE_ENV_FILE_" <<ENDCAT
-
-REDMINE_MYSQL_CNF_FILE="$MYSQL_REDMINE_CNF_FILE_PATH"
-
-ENDCAT
+chown "$REDMINE_FILES_OWNER:$REDMINE_FILES_GROUP" "$REDMINE_MYSQL_CNF_FILE"
 

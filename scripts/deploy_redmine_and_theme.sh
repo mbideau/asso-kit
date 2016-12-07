@@ -136,8 +136,15 @@ su -c "RAILS_ENV=production bundle exec rake db:migrate" $REDMINE_USERNAME >/dev
 debug "Populating database with default data (fr)"
 su -c "RAILS_ENV=production REDMINE_LANG=fr bundle exec rake redmine:load_default_data" $REDMINE_USERNAME >/dev/null
 
+debug "Creating SQL script by replacing %app_title% and %domain% from the source"
+tmp_sql=`mktemp '/tmp/redmine_update_data.sql.tmp.XXXXXXXXXX'`
+sed -e "s/%app_title%/$APP_TITLE/g" -e "s/%domain%/$DOMAIN/g" "$REDMINE_DEFAULT_DATA_SQL_REDMINE" > "$tmp_sql"
+
 debug "Updating default data with our custom SQL script"
-mysql --defaults-extra-file="$REDMINE_MYSQL_CNF_FILE" "$REDMINE_MYSQL_DATABASE_PRODUCTION" < "$REDMINE_DEFAULT_DATA_SQL_REDMINE"
+mysql --defaults-extra-file="$REDMINE_MYSQL_CNF_FILE" "$REDMINE_MYSQL_DATABASE_PRODUCTION" < "$tmp_sql"
+
+debug "Removing temp file '$tmp_sql'"
+rm -f "$tmp_sql"
 
 
 info "Installing theme"
@@ -179,14 +186,13 @@ then
 	#~ 	fi
 	#~ done
 	#~ cp "$REDMINE_NGINX_SERVER_CONF" /etc/nginx/conf.d/
-	cp "$REDMINE_NGINX_SITE_CONF" /etc/nginx/sites-available/
-	ln -s ../sites-available/"`basename "$REDMINE_NGINX_SITE_CONF"`" /etc/nginx/sites-enabled/
+	sed -e "s/%domain%/$DOMAIN/g" "$REDMINE_NGINX_SITE_CONF" > /etc/nginx/sites-available/${DOMAIN}.conf
+	ln -s ../sites-available/${DOMAIN}.conf /etc/nginx/sites-enabled/
 
-	redmine_domain="`basename "$REDMINE_NGINX_SITE_CONF" '.conf'`"
-	if ! grep "$redmine_domain" /etc/hosts
+	if ! grep "$DOMAIN" /etc/hosts
 	then
-		debug "adding domain '$redmine_domain' to /etc/hosts"
-		echo "127.0.0.1	$redmine_domain" >> /etc/hosts
+		debug "adding domain '$DOMAIN' to /etc/hosts"
+		echo "127.0.0.1	$DOMAIN" >> /etc/hosts
 	fi
 
 	info "Restarting webserver (nginx)"

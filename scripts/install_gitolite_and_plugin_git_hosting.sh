@@ -13,12 +13,12 @@ CONFIGURATION_FILE="$SRC_ROOT"/redmine.conf
 # shell fancy
 . "$SHELL_FANCY"
 
-title "Installation of the Redmine plugin 'Git Hosting' and 'Gitolite'"
+title "Installation of the Redmine plugin 'Git Hosting' and 'Gitolite' and 'GitAnnex'"
 
 help()
 {
 	cat <<ENDCAT
-This shell script installs the Redmine plugin 'Git Hosting' and 'Gitolite'
+This shell script installs the Redmine plugin 'Git Hosting', 'Gitolite' and 'GitAnnex'
 ENDCAT
 usage
 }
@@ -152,12 +152,73 @@ su -c "ln -s $REDMINE_USER_HOME/.ssh/redmine_gitolite_admin_id_rsa* plugins/redm
 
 
 info "Updating default data"
+
+debug "Creating SQL script by replacing %app_title% and %domain% from the source"
+tmp_sql=`mktemp '/tmp/redmine_update_data.sql.tmp.XXXXXXXXXX'`
+sed -e "s/%app_title%/$APP_TITLE/g" -e "s/%domain%/$DOMAIN/g" "$REDMINE_DEFAULT_DATA_SQL_GIT_HOSTING" > "$tmp_sql"
+
 debug "Updating default data with our custom SQL script"
-mysql --defaults-extra-file="$REDMINE_MYSQL_CNF_FILE" "$REDMINE_MYSQL_DATABASE_PRODUCTION" < "$REDMINE_DEFAULT_DATA_SQL_GIT_HOSTING"
+mysql --defaults-extra-file="$REDMINE_MYSQL_CNF_FILE" "$REDMINE_MYSQL_DATABASE_PRODUCTION" < "$tmp_sql"
+
+debug "Removing temp file '$tmp_sql'"
+rm -f "$tmp_sql"
 
 
 info "Installing Gitolite hooks"
 su -c "RAILS_ENV=production bundle exec rake redmine_git_hosting:install_gitolite_hooks" $REDMINE_USERNAME >/dev/null
+
+info "Enforcing READ permission on all Gitolite repository for redmine admin user"
+
+cat > "$REDMINE_USER_HOME"/.ssh/config <<ENDCAT
+Host localhost
+  User git
+  IdentityFile $REDMINE_USER_HOME/.ssh/redmine_gitolite_admin_id_rsa
+  IdentitiesOnly yes
+  UserKnownHostsFile /dev/null
+  StrictHostKeyChecking no
+ENDCAT
+chown redmine:redmine "$REDMINE_USER_HOME"/.ssh/config
+temp_admin_repo=`mktemp -u '/tmp/gitolite-admin.tmp.XXXXXXXXXX'`
+su -c "git clone -q ssh://git@localhost/gitolite-admin.git \"$temp_admin_repo\"" $REDMINE_USERNAME > /dev/null
+cd "$temp_admin_repo"
+if ! grep -q '^repo  *@all' conf/gitolite.conf
+then
+	mv conf/gitolite.conf conf/gitolite.conf.bak
+	cat - conf/gitolite.conf.bak > conf/gitolite.conf <<ENDCAT
+repo    @all
+  RW+                            = redmine_gitolite_admin_id_rsa
+
+ENDCAT
+	chown redmine:redmine conf/gitolite.conf
+	su -c "git config --global user.email 'redmine@$DOMAIN'" $REDMINE_USERNAME >/dev/null
+	su -c "git config --global user.name 'Redmine Git Hosting'" $REDMINE_USERNAME >/dev/null
+	su -c "git add conf/gitolite.conf" $REDMINE_USERNAME >/dev/null
+	su -c "git commit -q -m 'Allow Redmine Admin Key to access all repositories'" $REDMINE_USERNAME >/dev/null
+	su -c 'git push -q -u origin master' $REDMINE_USERNAME >/dev/null
+else
+	warning "A user has already permissions defined for all repo. I don't want to touch it."
+	user_action "Please manually add the following to '$temp_admin_repo/conf/gitolite.conf' (don't forget to commit and push) :
+repo    @all
+  RW+                            = redmine_gitolite_admin_id_rsa
+"
+	user_action "Hit <enter> to continue ..."
+	read cont
+fi
+cd - >/dev/null
+rm -fr "$temp_admin_repo"
+rm -f "$REDMINE_USER_HOME"/.ssh/config
+
+debug "Emptying Gitolite cache"
+su -c "RAILS_ENV=production bundle exec rake redmine_git_hosting:fetch_changesets" $REDMINE_USERNAME >/dev/null
+
+
+info "Installing Git-Annex"
+
+debug "Installing required packages"
+apt-get -qq -y install --no-install-recommends git-annex lsof >/dev/null
+
+debug "Adding git-annex-shell to enabled commands for gitolite"
+sed "/^ *ENABLE => \[ *$/ a\ \n        # git-annex\n\n            'git-annex-shell ua',\n" -i /home/$GIT_USER/.gitolite.rc
 
 
 if [ "$DEPLOY_NGINX_PASSENGER" = 'true' ]

@@ -4,15 +4,9 @@
 set -e
 
 THIS_SCRIPT_DIR="`dirname "$0"`"
-
-SHELL_FANCY="$THIS_SCRIPT_DIR"/lib/shell_fancy.sh
-CONFIGURATION_FILE="$THIS_SCRIPT_DIR"/redmine.conf
-
-SCRIPTS_DIR="$THIS_SCRIPT_DIR"/scripts
-REDMINE_DB_DIR="$THIS_SCRIPT_DIR"/db
-MYSQL_ADMIN_CNF_FILE_PATH=/root/.config/mysql/admin.cnf
-
-DEBUG_MODE=false
+SRC_ROOT="$THIS_SCRIPT_DIR"
+SHELL_FANCY="$SRC_ROOT"/lib/shell_fancy.sh
+CONFIGURATION_FILE="$SRC_ROOT"/redmine.conf
 
 # shell fancy
 . "$SHELL_FANCY"
@@ -42,12 +36,13 @@ usage()
 {
 	cat <<ENDCAT
 Usage:
-	`basename "$0"`  MYSQL_ADMIN_PASSWORD_FILE  MYSQL_REDMINE_USERNAME  MYSQL_REDMINE_PASSWORD_FILE
+	`basename "$0"`  MYSQL_ADMIN_PASSWORD_FILE  MYSQL_REDMINE_PASSWORD_FILE  [APP_TITLE  [DOMAIN]]
 
 Arguments:
-	MYSQL_ADMIN_PASSWORD_FILE	A simple text file that contains Mysql Admin user password
-	MYSQL_REDMINE_USERNAME		The Mysql Redmine user that will be created
-	MYSQL_REDMINE_PASSWORD_FILE	A simple text file that contains Mysql Redmine user password
+	MYSQL_ADMIN_PASSWORD_FILE		A simple text file that contains Mysql Admin user password
+	MYSQL_REDMINE_PASSWORD_FILE		A simple text file that contains Mysql Redmine user password
+	APP_TITLE						The application title (optional, default: Asso Kit)
+	DOMAIN							The application web site domain (optional, default: asso-kit.local)
 
 ENDCAT
 }
@@ -59,6 +54,23 @@ then
 	help
 	exit
 fi
+
+app_title="$3"
+domain="$4"
+
+# replacing application title
+if [ "$app_title" != '' ]
+then
+	debug "Replacing application by '$app_title' in the configuration file"
+	sed "s/^\(APP_TITLE=\).*$/\1'$app_title'/g" -i "$CONFIGURATION_FILE"
+fi
+# replacing domain
+if [ "$domain" != '' ]
+then
+	debug "Replacing domain by '$domain' in the configuration file"
+	sed "s/^\(DOMAIN=\).*$/\1'$domain'/g" -i "$CONFIGURATION_FILE"
+fi
+
 
 # for each shell script
 for s in \
@@ -74,7 +86,7 @@ do
 	# specific case for system setup (executed with arguments)
 	if [ "$s" = 'setup_system.sh' ]
 	then
-		"$script_to_launch" $*
+		"$script_to_launch" "$1" "$2"
 
 	# other shell scripts
 	else
