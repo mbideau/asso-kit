@@ -132,3 +132,49 @@ To use git-annex synchronisation, follow those steps :
 
 You're done.
 
+
+## Plugin Unread Issues
+
+### Register to download the plugin at RM+
+
+Go to [Unread Issues plugin page at RM+](http://rmplus.pro/en/redmine/plugins/unread_issues) and click on 'Get free "Unread Issues"' button.
+
+Then :
+
+* upload/download the zip file (_received by mail_) on the server machine.  
+
+* unzip the archive to plugins dir :
+   ```
+   unzip -d <redmine_dir>/plugins <unread_issues.zip>
+   ```
+
+* change owner and group of the files :
+	```
+	chown -R redmine:redmine <redmine_dir>/plugins/unread_issues
+	```
+
+* execute bundle install as the redmine user, in the redmine folder :
+	```
+	cd <redmine_dir> && su -c "bundle install --without development test --path vendor/bundle" redmine
+	```
+
+* execute plugin migration :
+	```
+	cd <redmine_dir> && su -c "bundle exec rake redmine:plugins NAME=unread_issues RAILS_ENV=production" redmine
+	```
+
+* set the query to use for the user tasks :
+	```
+	mysql --defaults-extra-file=<mysql_redmine_cnf_file> redmine <<ENDMYSQL
+		INSERT INTO `settings` (`name`, `value`, `updated_on`) VALUES ('plugin_unread_issues','--- !ruby/hash:ActionController::Parameters\nassigned_issues: \'1\'\n', NOW())
+		ON DUPLICATE KEY UPDATE `value` = '--- !ruby/hash:ActionController::Parameters\nassigned_issues: \'1\'\n', `updated_on` = NOW();
+	ENDMYSQL
+	```
+
+* restart webserver :
+	```
+	service nginx restart
+	```
+
+You're done.
+
