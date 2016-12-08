@@ -1,5 +1,5 @@
 /* plugin zquery */
-INSERT INTO `queries` VALUES (1, NULL, 'Mes tâches (assignées ou créées)','---\nauthor_id:\n  :operator: \"=\"\n  :values:\n  - me\nor_any:\n  :operator: \"=\"\n  :values:\n  - Inclus\nassigned_to_id:\n  :operator: \"=\"\n  :values:\n  - me\n',5,NULL,'---\n- - done_ratio\n  - asc\n- - priority\n  - desc\n- - id\n  - desc\n','','IssueQuery',2,'---\n:totalable_names:\n- :estimated_hours\n:draw_relations: \n:draw_progress_line: \n');
+INSERT INTO `queries` VALUES (1, NULL, 'Mes tâches (assignées ou créées)', '---\nstatus_id:\n  :operator: \"!\"\n  :values:\n  - \'3\'\n  - \'5\'\n  - \'6\'\nand_any:\n  :operator: \"=\"\n  :values:\n  - Inclus\nauthor_id:\n  :operator: \"=\"\n  :values:\n  - me\nassigned_to_id:\n  :operator: \"=\"\n  :values:\n  - me\n',1,NULL,'---\n- - done_ratio\n  - desc\n- - priority\n  - desc\n- - id\n  - desc\n','','IssueQuery',2,'---\n:totalable_names:\n- :estimated_hours\n:draw_relations: \n:draw_progress_line: \n');
 
 /* plugin Issue Checklist */
 INSERT INTO `settings` (`name`, `value`, `updated_on`) VALUES ('plugin_redmine_issue_checklist', '--- !ruby/hash:ActionController::Parameters\nsave_log: \'1\'\n', NOW()) ON DUPLICATE KEY UPDATE `value` = '--- !ruby/hash:ActionController::Parameters\nsave_log: \'1\'\n', `updated_on` = NOW();
