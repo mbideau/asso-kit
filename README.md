@@ -34,8 +34,8 @@ Other third party software were added in conjuction to make it even more feature
 	touch ~/.config/mysql/redmine.pass
 	vi ~/.config/mysql/redmine.pass # write the password
 
-	# run the install script
-	sudo ./install.sh ~/.config/mysql/admin.pass ~/.config/mysql/redmine.pass
+	# run the install script (arguments are : MYSQL_ADMIN_PASS_FILE MYSQL_REDMINE_PASS_FILE APP_TITLE DOMAIN)
+	sudo ./install.sh ~/.config/mysql/admin.pass ~/.config/mysql/redmine.pass "Hello World" "hello-world.local"
 
 	# remove the password files
 	rm -f ~/.config/mysql/admin.pass ~/.config/mysql/redmine.pass
